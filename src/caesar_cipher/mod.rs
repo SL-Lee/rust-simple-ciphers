@@ -12,9 +12,10 @@ where
         let ciphertext = plaintext
             .as_ref()
             .chars()
-            .map(|c| c.to_ascii_uppercase())
-            .filter_map(|c| ALPHABETS.find(c))
-            .map(|index| ALPHABETS.chars().nth((index + key) % 26).unwrap())
+            .filter_map(|c| match ALPHABETS.find(c.to_ascii_uppercase()) {
+                Some(index) => ALPHABETS.chars().nth((index + key) % 26),
+                None => Some(c),
+            })
             .collect::<String>();
 
         Ok(ciphertext)
@@ -31,13 +32,11 @@ where
         let plaintext = ciphertext
             .as_ref()
             .chars()
-            .map(|c| c.to_ascii_uppercase())
-            .filter_map(|c| ALPHABETS.find(c))
-            .map(|index| {
-                ALPHABETS
-                    .chars()
-                    .nth((((index as isize - key as isize) + 26) % 26) as usize)
-                    .unwrap()
+            .filter_map(|c| match ALPHABETS.find(c.to_ascii_uppercase()) {
+                Some(index) => ALPHABETS.chars().nth(
+                    (((index as isize - key as isize) + 26) % 26) as usize,
+                ),
+                None => Some(c),
             })
             .collect::<String>();
 
@@ -53,11 +52,17 @@ mod tests {
 
     #[test]
     fn caesar_cipher_encrypt_test() {
-        assert_eq!("VHFUHW".to_string(), encrypt("SECRET", 3).unwrap());
+        assert_eq!(
+            "VHFUHW WHAW.".to_string(),
+            encrypt("SECRET TEXT.", 3).unwrap()
+        );
     }
 
     #[test]
     fn caesar_cipher_decrypt_test() {
-        assert_eq!("SECRET".to_string(), decrypt("VHFUHW", 3).unwrap());
+        assert_eq!(
+            "SECRET TEXT.".to_string(),
+            decrypt("VHFUHW WHAW.", 3).unwrap()
+        );
     }
 }
