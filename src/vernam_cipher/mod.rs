@@ -12,14 +12,12 @@ where
         let ciphertext = key
             .as_ref()
             .chars()
-            .map(|c| c.to_ascii_uppercase())
-            .filter_map(|c| ALPHABETS.find(c))
+            .filter_map(|c| ALPHABETS.find(c.to_ascii_uppercase()))
             .zip(
                 plaintext
                     .as_ref()
                     .chars()
-                    .map(|c| c.to_ascii_uppercase())
-                    .filter_map(|c| ALPHABETS.find(c)),
+                    .filter_map(|c| ALPHABETS.find(c.to_ascii_uppercase())),
             )
             .map(|(i, j)| ALPHABETS.chars().nth((i + j) % 26).unwrap())
             .collect::<String>();
@@ -35,17 +33,15 @@ where
     S: AsRef<str>,
 {
     if is_valid_key(&ciphertext, &key) {
-        let ciphertext = key
+        let plaintext = key
             .as_ref()
             .chars()
-            .map(|c| c.to_ascii_uppercase())
-            .filter_map(|c| ALPHABETS.find(c))
+            .filter_map(|c| ALPHABETS.find(c.to_ascii_uppercase()))
             .zip(
                 ciphertext
                     .as_ref()
                     .chars()
-                    .map(|c| c.to_ascii_uppercase())
-                    .filter_map(|c| ALPHABETS.find(c)),
+                    .filter_map(|c| ALPHABETS.find(c.to_ascii_uppercase())),
             )
             .map(|(i, j)| {
                 ALPHABETS
@@ -55,7 +51,7 @@ where
             })
             .collect::<String>();
 
-        Ok(ciphertext)
+        Ok(plaintext)
     } else {
         Err(Error::new(ErrorKind::InvalidKey))
     }
