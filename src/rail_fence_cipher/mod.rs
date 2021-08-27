@@ -32,11 +32,7 @@ where
 
         for &i in &sequence {
             for (j, rail) in rails.iter_mut().enumerate().take(key) {
-                if i == j {
-                    rail.push(1);
-                } else {
-                    rail.push(0);
-                }
+                rail.push(if i == j { 1 } else { 0 });
             }
         }
 
