@@ -64,12 +64,12 @@ where
     plaintext
         .as_ref()
         .chars()
-        .filter(|&c| ALPHABETS.contains(c))
+        .filter(|&c| ALPHABETS.contains(c.to_ascii_uppercase()))
         .count()
         == key
             .as_ref()
             .chars()
-            .filter(|&c| ALPHABETS.contains(c))
+            .filter(|&c| ALPHABETS.contains(c.to_ascii_uppercase()))
             .count()
 }
 

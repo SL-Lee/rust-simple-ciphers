@@ -18,7 +18,7 @@ where
         let ciphertext = plaintext
             .as_ref()
             .chars()
-            .filter_map(|c| key.get(&c))
+            .filter_map(|c| key.get(&c.to_ascii_uppercase()))
             .collect::<String>();
 
         Ok(ciphertext)
@@ -40,7 +40,7 @@ where
         let plaintext = ciphertext
             .as_ref()
             .chars()
-            .filter_map(|c| key.get(&c))
+            .filter_map(|c| key.get(&c.to_ascii_uppercase()))
             .collect::<String>();
 
         Ok(plaintext)
@@ -53,13 +53,12 @@ fn is_valid_key<S>(key: S) -> bool
 where
     S: AsRef<str>,
 {
-    let key = key
-        .as_ref()
+    key.as_ref()
         .chars()
-        .filter(|&c| ALPHABETS.contains(c))
-        .collect::<HashSet<char>>();
-
-    key.len() == 26
+        .filter(|&c| ALPHABETS.contains(c.to_ascii_uppercase()))
+        .collect::<HashSet<char>>()
+        .len()
+        == 26
 }
 
 #[cfg(test)]
