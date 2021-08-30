@@ -8,55 +8,72 @@ pub fn encrypt<S>(plaintext: S, key: S) -> Result<String, Error>
 where
     S: AsRef<str>,
 {
-    if is_valid_key(&key) {
-        let key = ALPHABETS
-            .chars()
-            .zip(key.as_ref().chars())
-            .collect::<HashMap<char, char>>();
-        let ciphertext = plaintext
-            .as_ref()
-            .chars()
-            .filter_map(|c| key.get(&c.to_ascii_uppercase()))
-            .collect::<String>();
+    let key = validate_encryption_key(key)?;
+    let ciphertext = plaintext
+        .as_ref()
+        .chars()
+        .filter_map(|c| key.get(&c.to_ascii_uppercase()))
+        .collect::<String>();
 
-        Ok(ciphertext)
-    } else {
-        Err(Error::new(ErrorKind::InvalidMonoAlphabeticCipherKey))
-    }
+    Ok(ciphertext)
 }
 
 pub fn decrypt<S>(ciphertext: S, key: S) -> Result<String, Error>
 where
     S: AsRef<str>,
 {
-    if is_valid_key(&key) {
-        let key = key
-            .as_ref()
-            .chars()
-            .zip(ALPHABETS.chars())
-            .collect::<HashMap<char, char>>();
-        let plaintext = ciphertext
-            .as_ref()
-            .chars()
-            .filter_map(|c| key.get(&c.to_ascii_uppercase()))
-            .collect::<String>();
+    let key = validate_decryption_key(key)?;
+    let plaintext = ciphertext
+        .as_ref()
+        .chars()
+        .filter_map(|c| key.get(&c.to_ascii_uppercase()))
+        .collect::<String>();
 
-        Ok(plaintext)
-    } else {
-        Err(Error::new(ErrorKind::InvalidMonoAlphabeticCipherKey))
-    }
+    Ok(plaintext)
 }
 
-fn is_valid_key<S>(key: S) -> bool
+pub fn validate_encryption_key<S>(key: S) -> Result<HashMap<char, char>, Error>
 where
     S: AsRef<str>,
 {
-    key.as_ref()
+    let key = key.as_ref();
+
+    if key
         .chars()
         .filter(|&c| ALPHABETS.contains(c.to_ascii_uppercase()))
         .collect::<HashSet<char>>()
         .len()
         == 26
+    {
+        Ok(ALPHABETS
+            .chars()
+            .zip(key.chars())
+            .collect::<HashMap<char, char>>())
+    } else {
+        Err(Error::new(ErrorKind::InvalidMonoAlphabeticCipherKey))
+    }
+}
+
+pub fn validate_decryption_key<S>(key: S) -> Result<HashMap<char, char>, Error>
+where
+    S: AsRef<str>,
+{
+    let key = key.as_ref();
+
+    if key
+        .chars()
+        .filter(|&c| ALPHABETS.contains(c.to_ascii_uppercase()))
+        .collect::<HashSet<char>>()
+        .len()
+        == 26
+    {
+        Ok(key
+            .chars()
+            .zip(ALPHABETS.chars())
+            .collect::<HashMap<char, char>>())
+    } else {
+        Err(Error::new(ErrorKind::InvalidMonoAlphabeticCipherKey))
+    }
 }
 
 #[cfg(test)]

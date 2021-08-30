@@ -4,54 +4,55 @@ pub fn encrypt<S>(plaintext: S, key: usize) -> Result<String, Error>
 where
     S: AsRef<str>,
 {
-    if key > 1 {
-        let plaintext = plaintext.as_ref();
-        let mut ciphertext = vec![String::new(); key];
-        let sequence = generate_sequence(plaintext.len(), key);
+    let key = validate_key(key)?;
+    let plaintext = plaintext.as_ref();
+    let mut ciphertext = vec![String::new(); key];
+    let sequence = generate_sequence(plaintext.len(), key);
 
-        for (i, &j) in sequence.iter().enumerate() {
-            ciphertext[j].push(plaintext.chars().nth(i).unwrap());
-        }
-
-        Ok(ciphertext.join(""))
-    } else {
-        Err(Error::new(ErrorKind::InvalidRailFenceCipherKey))
+    for (i, &j) in sequence.iter().enumerate() {
+        ciphertext[j].push(plaintext.chars().nth(i).unwrap());
     }
+
+    Ok(ciphertext.join(""))
 }
 
 pub fn decrypt<S>(ciphertext: S, key: usize) -> Result<String, Error>
 where
     S: AsRef<str>,
 {
-    if key > 1 {
-        let ciphertext = ciphertext.as_ref();
-        let mut rails = vec![Vec::new(); key];
-        let sequence = generate_sequence(ciphertext.len(), key);
+    let key = validate_key(key)?;
+    let ciphertext = ciphertext.as_ref();
+    let mut rails = vec![Vec::new(); key];
+    let sequence = generate_sequence(ciphertext.len(), key);
 
-        for &i in &sequence {
-            for (j, rail) in rails.iter_mut().enumerate().take(key) {
-                rail.push(if i == j { 1 } else { 0 });
-            }
+    for &i in &sequence {
+        for (j, rail) in rails.iter_mut().enumerate().take(key) {
+            rail.push(if i == j { 1 } else { 0 });
         }
+    }
 
-        let mut count = 0;
+    let mut count = 0;
 
-        for rail in rails.iter_mut().take(key) {
-            while let Some(index) = rail.iter().position(|&e| e == 1) {
-                rail[index] = ciphertext.chars().nth(count).unwrap() as u8;
-                count += 1;
-            }
+    for rail in rails.iter_mut().take(key) {
+        while let Some(index) = rail.iter().position(|&e| e == 1) {
+            rail[index] = ciphertext.chars().nth(count).unwrap() as u8;
+            count += 1;
         }
+    }
 
-        let mut plaintext = String::new();
+    let mut plaintext = String::new();
 
-        for (i, &j) in sequence.iter().enumerate() {
-            plaintext.push(rails[j][i] as char);
-        }
+    for (i, &j) in sequence.iter().enumerate() {
+        plaintext.push(rails[j][i] as char);
+    }
 
-        Ok(plaintext)
-    } else {
-        Err(Error::new(ErrorKind::InvalidRailFenceCipherKey))
+    Ok(plaintext)
+}
+
+pub fn validate_key(key: usize) -> Result<usize, Error> {
+    match key {
+        0 => Err(Error::new(ErrorKind::InvalidRailFenceCipherKey)),
+        _ => Ok(key),
     }
 }
 

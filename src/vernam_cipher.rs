@@ -6,61 +6,56 @@ pub fn encrypt<S>(plaintext: S, key: S) -> Result<String, Error>
 where
     S: AsRef<str>,
 {
-    if is_valid_key(&plaintext, &key) {
-        let ciphertext = key
-            .as_ref()
-            .chars()
-            .filter_map(|c| ALPHABETS.find(c.to_ascii_uppercase()))
-            .zip(
-                plaintext
-                    .as_ref()
-                    .chars()
-                    .filter_map(|c| ALPHABETS.find(c.to_ascii_uppercase())),
-            )
-            .map(|(i, j)| ALPHABETS.chars().nth((i + j) % 26).unwrap())
-            .collect::<String>();
+    let key = validate_key(&plaintext, &key)?;
+    let ciphertext = key
+        .as_ref()
+        .chars()
+        .filter_map(|c| ALPHABETS.find(c.to_ascii_uppercase()))
+        .zip(
+            plaintext
+                .as_ref()
+                .chars()
+                .filter_map(|c| ALPHABETS.find(c.to_ascii_uppercase())),
+        )
+        .map(|(i, j)| ALPHABETS.chars().nth((i + j) % 26).unwrap())
+        .collect::<String>();
 
-        Ok(ciphertext)
-    } else {
-        Err(Error::new(ErrorKind::InvalidVernamCipherKey))
-    }
+    Ok(ciphertext)
 }
 
 pub fn decrypt<S>(ciphertext: S, key: S) -> Result<String, Error>
 where
     S: AsRef<str>,
 {
-    if is_valid_key(&ciphertext, &key) {
-        let plaintext = key
-            .as_ref()
-            .chars()
-            .filter_map(|c| ALPHABETS.find(c.to_ascii_uppercase()))
-            .zip(
-                ciphertext
-                    .as_ref()
-                    .chars()
-                    .filter_map(|c| ALPHABETS.find(c.to_ascii_uppercase())),
-            )
-            .map(|(i, j)| {
-                ALPHABETS
-                    .chars()
-                    .nth((((j as isize - i as isize) + 26) % 26) as usize)
-                    .unwrap()
-            })
-            .collect::<String>();
+    let key = validate_key(&ciphertext, &key)?;
+    let plaintext = key
+        .as_ref()
+        .chars()
+        .filter_map(|c| ALPHABETS.find(c.to_ascii_uppercase()))
+        .zip(
+            ciphertext
+                .as_ref()
+                .chars()
+                .filter_map(|c| ALPHABETS.find(c.to_ascii_uppercase())),
+        )
+        .map(|(i, j)| {
+            ALPHABETS
+                .chars()
+                .nth((((j as isize - i as isize) + 26) % 26) as usize)
+                .unwrap()
+        })
+        .collect::<String>();
 
-        Ok(plaintext)
-    } else {
-        Err(Error::new(ErrorKind::InvalidVernamCipherKey))
-    }
+    Ok(plaintext)
 }
 
-fn is_valid_key<S>(plaintext: S, key: S) -> bool
+pub fn validate_key<S>(input: S, key: S) -> Result<S, Error>
 where
     S: AsRef<str>,
 {
-    plaintext
-        .as_ref()
+    let plaintext = input.as_ref();
+
+    if plaintext
         .chars()
         .filter(|&c| ALPHABETS.contains(c.to_ascii_uppercase()))
         .count()
@@ -69,6 +64,11 @@ where
             .chars()
             .filter(|&c| ALPHABETS.contains(c.to_ascii_uppercase()))
             .count()
+    {
+        Ok(key)
+    } else {
+        Err(Error::new(ErrorKind::InvalidVernamCipherKey))
+    }
 }
 
 #[cfg(test)]
