@@ -26,9 +26,8 @@ impl fmt::Display for Error {
             ErrorKind::InvalidColumnarTranspositionCipherKey => {
                 write!(
                     f,
-                    "<key> must be a string of integers of range 0 to n - 1, \
-                    where n is the length of the key itself, in an arbitrary \
-                    order"
+                    "<key> must be a string of integers of range 1 to n, where \
+                     n is the length of the key itself, in an arbitrary order"
                 )
             }
             ErrorKind::InvalidMonoAlphabeticCipherKey => {
