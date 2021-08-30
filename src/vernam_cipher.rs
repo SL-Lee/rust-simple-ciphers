@@ -1,6 +1,4 @@
-pub mod error;
-
-use error::{Error, ErrorKind};
+use crate::error::{Error, ErrorKind};
 
 const ALPHABETS: &str = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
 
@@ -24,7 +22,7 @@ where
 
         Ok(ciphertext)
     } else {
-        Err(Error::new(ErrorKind::InvalidKey))
+        Err(Error::new(ErrorKind::InvalidVernamCipherKey))
     }
 }
 
@@ -53,7 +51,7 @@ where
 
         Ok(plaintext)
     } else {
-        Err(Error::new(ErrorKind::InvalidKey))
+        Err(Error::new(ErrorKind::InvalidVernamCipherKey))
     }
 }
 

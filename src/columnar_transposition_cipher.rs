@@ -1,6 +1,4 @@
-pub mod error;
-
-use error::{Error, ErrorKind};
+use crate::error::{Error, ErrorKind};
 
 pub fn encrypt<S>(plaintext: S, key: S) -> Result<String, Error>
 where
@@ -36,7 +34,7 @@ where
 
         Ok(ciphertext)
     } else {
-        Err(Error::new(ErrorKind::InvalidKey))
+        Err(Error::new(ErrorKind::InvalidColumnarTranspositionCipherKey))
     }
 }
 
@@ -81,7 +79,7 @@ where
 
         Ok(plaintext)
     } else {
-        Err(Error::new(ErrorKind::InvalidKey))
+        Err(Error::new(ErrorKind::InvalidColumnarTranspositionCipherKey))
     }
 }
 
