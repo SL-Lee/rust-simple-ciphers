@@ -33,8 +33,7 @@ where
 {
     let key = validate_decryption_key(key)?;
     let ciphertext = ciphertext.as_ref();
-    let remainder_range =
-        (0..ciphertext.len() % key.len()).collect::<Vec<usize>>();
+    let remainder_range = (0..ciphertext.len() % key.len()).collect::<Vec<usize>>();
     let full_rows = ciphertext.len() / key.len();
     let total_rows = full_rows + if remainder_range.is_empty() { 0 } else { 1 };
     let mut columns = vec![String::new(); key.len()];
@@ -71,8 +70,7 @@ where
     let required_digits = (1..key.len() + 1).collect::<Vec<usize>>();
 
     if key.chars().all(|c| {
-        c.is_ascii_digit()
-            && required_digits.contains(&(c.to_digit(10).unwrap() as usize))
+        c.is_ascii_digit() && required_digits.contains(&(c.to_digit(10).unwrap() as usize))
     }) {
         let mut key = key
             .chars()
@@ -93,8 +91,7 @@ where
     let required_digits = (1..key.len() + 1).collect::<Vec<usize>>();
 
     if key.chars().all(|c| {
-        c.is_ascii_digit()
-            && required_digits.contains(&(c.to_digit(10).unwrap() as usize))
+        c.is_ascii_digit() && required_digits.contains(&(c.to_digit(10).unwrap() as usize))
     }) {
         Ok(key
             .chars()
