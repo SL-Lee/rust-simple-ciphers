@@ -11,12 +11,7 @@ where
         .as_ref()
         .chars()
         .filter_map(|c| ALPHABETS.find(c.to_ascii_uppercase()))
-        .zip(
-            plaintext
-                .as_ref()
-                .chars()
-                .filter_map(|c| ALPHABETS.find(c.to_ascii_uppercase())),
-        )
+        .zip(plaintext.as_ref().chars().filter_map(|c| ALPHABETS.find(c.to_ascii_uppercase())))
         .map(|(i, j)| ALPHABETS.chars().nth((i + j) % 26).unwrap())
         .collect::<String>();
 
@@ -32,17 +27,9 @@ where
         .as_ref()
         .chars()
         .filter_map(|c| ALPHABETS.find(c.to_ascii_uppercase()))
-        .zip(
-            ciphertext
-                .as_ref()
-                .chars()
-                .filter_map(|c| ALPHABETS.find(c.to_ascii_uppercase())),
-        )
+        .zip(ciphertext.as_ref().chars().filter_map(|c| ALPHABETS.find(c.to_ascii_uppercase())))
         .map(|(i, j)| {
-            ALPHABETS
-                .chars()
-                .nth((((j as isize - i as isize) + 26) % 26) as usize)
-                .unwrap()
+            ALPHABETS.chars().nth((((j as isize - i as isize) + 26) % 26) as usize).unwrap()
         })
         .collect::<String>();
 
@@ -55,15 +42,8 @@ where
 {
     let plaintext = input.as_ref();
 
-    if plaintext
-        .chars()
-        .filter(|&c| ALPHABETS.contains(c.to_ascii_uppercase()))
-        .count()
-        == key
-            .as_ref()
-            .chars()
-            .filter(|&c| ALPHABETS.contains(c.to_ascii_uppercase()))
-            .count()
+    if plaintext.chars().filter(|&c| ALPHABETS.contains(c.to_ascii_uppercase())).count()
+        == key.as_ref().chars().filter(|&c| ALPHABETS.contains(c.to_ascii_uppercase())).count()
     {
         Ok(key)
     } else {

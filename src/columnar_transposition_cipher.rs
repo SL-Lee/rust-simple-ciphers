@@ -72,10 +72,7 @@ where
     if key.chars().all(|c| {
         c.is_ascii_digit() && required_digits.contains(&(c.to_digit(10).unwrap() as usize))
     }) {
-        let mut key = key
-            .chars()
-            .zip(0..key.len())
-            .collect::<Vec<(char, usize)>>();
+        let mut key = key.chars().zip(0..key.len()).collect::<Vec<(char, usize)>>();
         key.sort_by_key(|&(i, _)| i);
         Ok(key.iter().map(|&(_, j)| j).collect::<Vec<usize>>())
     } else {
@@ -93,10 +90,7 @@ where
     if key.chars().all(|c| {
         c.is_ascii_digit() && required_digits.contains(&(c.to_digit(10).unwrap() as usize))
     }) {
-        Ok(key
-            .chars()
-            .map(|c| (c.to_digit(10).unwrap() - 1) as usize)
-            .collect::<Vec<usize>>())
+        Ok(key.chars().map(|c| (c.to_digit(10).unwrap() - 1) as usize).collect::<Vec<usize>>())
     } else {
         Err(Error::new(ErrorKind::InvalidColumnarTranspositionCipherKey))
     }

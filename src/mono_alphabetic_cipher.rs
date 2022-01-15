@@ -45,10 +45,7 @@ where
         .len()
         == 26
     {
-        Ok(ALPHABETS
-            .chars()
-            .zip(key.chars())
-            .collect::<HashMap<char, char>>())
+        Ok(ALPHABETS.chars().zip(key.chars()).collect::<HashMap<char, char>>())
     } else {
         Err(Error::new(ErrorKind::InvalidMonoAlphabeticCipherKey))
     }
@@ -67,10 +64,7 @@ where
         .len()
         == 26
     {
-        Ok(key
-            .chars()
-            .zip(ALPHABETS.chars())
-            .collect::<HashMap<char, char>>())
+        Ok(key.chars().zip(ALPHABETS.chars()).collect::<HashMap<char, char>>())
     } else {
         Err(Error::new(ErrorKind::InvalidMonoAlphabeticCipherKey))
     }
@@ -82,17 +76,11 @@ mod tests {
 
     #[test]
     fn mono_alphabetic_cipher_encrypt_test() {
-        assert_eq!(
-            "LTEKTM".to_string(),
-            encrypt("SECRET", "AZERTYUIOPQSDFGHJKLMWXCVBN").unwrap(),
-        );
+        assert_eq!("LTEKTM".to_string(), encrypt("SECRET", "AZERTYUIOPQSDFGHJKLMWXCVBN").unwrap(),);
     }
 
     #[test]
     fn mono_alphabetic_cipher_decrypt_test() {
-        assert_eq!(
-            "SECRET".to_string(),
-            decrypt("LTEKTM", "AZERTYUIOPQSDFGHJKLMWXCVBN").unwrap(),
-        );
+        assert_eq!("SECRET".to_string(), decrypt("LTEKTM", "AZERTYUIOPQSDFGHJKLMWXCVBN").unwrap(),);
     }
 }
